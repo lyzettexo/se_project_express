@@ -27,7 +27,7 @@ const createItem = (req, res) => {
       console.error(err);
 
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid user data" });
+        return res.status(BAD_REQUEST).send({ message: "Invalid item data" });
       }
 
       return res
