@@ -6,7 +6,7 @@ const auth = require("../middlewares/auth");
 
 router.use("/items", clothingItemRouter);
 
-//-------- authorization required for all routes below this line--------
+// -------- authorization required for all routes below this line--------
 router.use(auth);
 
 router.use("/users", userRouter);
