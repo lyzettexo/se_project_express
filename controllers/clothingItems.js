@@ -3,6 +3,7 @@ const {
   BAD_REQUEST,
   NOT_FOUND,
   INTERNAL_SERVER_ERROR,
+  FORBIDDEN,
 } = require("../utils/errors");
 
 const getItems = (req, res) => {
@@ -28,27 +29,6 @@ const createItem = (req, res) => {
 
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({ message: "Invalid item data" });
-      }
-
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server." });
-    });
-};
-
-const deleteItem = (req, res) => {
-  ClothingItem.findByIdAndDelete(req.params.itemId)
-    .orFail()
-    .then((item) => res.send(item))
-    .catch((err) => {
-      console.error(err);
-
-      if (err.name === "CastError") {
-        return res.status(BAD_REQUEST).send({ message: "Invalid item ID" });
-      }
-
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND).send({ message: "Item not found" });
       }
 
       return res
@@ -90,6 +70,37 @@ const dislikeItem = (req, res) => {
   )
     .orFail()
     .then((item) => res.send(item))
+    .catch((err) => {
+      console.error(err);
+
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({ message: "Invalid item ID" });
+      }
+
+      if (err.name === "DocumentNotFoundError") {
+        return res.status(NOT_FOUND).send({ message: "Item not found" });
+      }
+
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server." });
+    });
+};
+
+const deleteItem = (req, res) => {
+  ClothingItem.findById(req.params.itemId)
+    .orFail()
+    .then((item) => {
+      if (item.owner.toString() !== req.user._id) {
+        return res
+          .status(FORBIDDEN)
+          .send({ message: "You do not have permission to delete this item." });
+      }
+
+      return ClothingItem.findByIdAndDelete(req.params.itemId).then(() =>
+        res.send({ message: "Item deleted successfully" })
+      );
+    })
     .catch((err) => {
       console.error(err);
 
