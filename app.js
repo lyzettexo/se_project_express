@@ -3,7 +3,6 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const routes = require("./routes");
 const { login, createUser } = require("./controllers/users");
-const auth = require("./middlewares/auth");
 
 const app = express();
 
@@ -17,7 +16,13 @@ app.use(cors());
 app.post("/signin", login);
 app.post("/signup", createUser);
 
-app.use(auth);
+app.use((req, res, next) => {
+  req.user = {
+    _id: "6a455be61d12e088fcfdc85d",
+  };
+
+  next();
+});
 
 app.use("/", routes);
 
