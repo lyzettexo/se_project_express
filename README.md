@@ -33,3 +33,8 @@ This project was built using the following technologies and tools:
 - CRUD operations
 - Mongoose schema validation
 - Error handling
+
+## Project Pitch Video
+
+Check out [this video](https://drive.google.com/file/d/1CqEX4jZfvca3q1vBGKwlk43QxlWgUbx9/view?usp=sharing), where I describe my
+project and some challenges I faced while building it.
