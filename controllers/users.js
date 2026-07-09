@@ -11,18 +11,6 @@ const {
   UNAUTHORIZED,
 } = require("../utils/errors");
 
-const getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => {
-      console.error(err);
-
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "An error has occurred on the server." });
-    });
-};
-
 const getCurrentUser = (req, res) => {
   User.findById(req.user._id)
     .orFail()
@@ -47,7 +35,13 @@ const getCurrentUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
-  bcrypt
+  if (!email || !password) {
+    return res
+      .status(BAD_REQUEST)
+      .send({ message: "Email and password are required." });
+  }
+
+  return bcrypt
     .hash(password, 10)
     .then((hash) =>
       User.create({
@@ -101,18 +95,33 @@ const login = (req, res) => {
     .catch((err) => {
       console.error(err);
 
+      if (err.message === "Incorrect email or password") {
+        return res
+          .status(UNAUTHORIZED)
+          .send({ message: "Incorrect email or password" });
+      }
+
       return res
-        .status(UNAUTHORIZED)
-        .send({ message: "Incorrect email or password" });
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "An error has occurred on the server." });
     });
 };
-
 const updateCurrentUser = (req, res) => {
   const { name, avatar } = req.body;
 
-  User.findByIdAndUpdate(
+  const updates = {};
+
+  if (name !== undefined) {
+    updates.name = name;
+  }
+
+  if (avatar !== undefined) {
+    updates.avatar = avatar;
+  }
+
+  return User.findByIdAndUpdate(
     req.user._id,
-    { name, avatar },
+    { $set: updates },
     {
       new: true,
       runValidators: true,
@@ -142,7 +151,6 @@ const updateCurrentUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   getCurrentUser,
   createUser,
   login,
