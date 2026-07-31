@@ -34,7 +34,14 @@ This project was built using the following technologies and tools:
 - Mongoose schema validation
 - Error handling
 
+## Domain
+
+https://api.wear2what.crabdance.com
+
+## Frontend Repository
+
+https://github.com/lyzettexo/se_project_react
+
 ## Project Pitch Video
 
-Check out [this video](https://drive.google.com/file/d/1CqEX4jZfvca3q1vBGKwlk43QxlWgUbx9/view?usp=sharing), where I describe my
-project and some challenges I faced while building it.
+https://www.loom.com/share/53148a16ad18447e84bc9178e4d04d86
