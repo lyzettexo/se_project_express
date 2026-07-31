@@ -9,7 +9,7 @@ const {
 } = require("./middlewares/validation");
 const { requestLogger, errorLogger } = require("./middlewares/logger");
 const routes = require("./routes");
-const errorHandler = require("./middlewares/errorHandler");
+const errorHandler = require("./middlewares/errorhandler");
 const NotFoundError = require("./errors/notfounderror");
 const { login, createUser } = require("./controllers/users");
 const { errors } = require("celebrate");
